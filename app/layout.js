@@ -1,8 +1,9 @@
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/ui/Header";
-import Footer from "@/components/ui/Footer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 
 const roboto = Roboto({
   
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
       >
         <Header/>
         <main className="min-h-screen">{children}</main>
+        <Toaster richColors/>
         <Footer/>
       </body>
     </html>
