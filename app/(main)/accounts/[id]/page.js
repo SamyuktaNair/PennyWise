@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import React, { Suspense } from 'react'
 import TransactionsTable from '../../dashboard/_components/TransactionsTable'
 import { BarLoader } from 'react-spinners'
+import AccountChart from '../../dashboard/_components/AccountChart'
 
 const Page=async ({params}) =>{
     const accountDetails=await getAccountDetails(params.id)
@@ -34,6 +35,9 @@ const Page=async ({params}) =>{
         </div>
         
       </div>
+      <Suspense fallback={<BarLoader className='mt-4 width={"100%}'/>}>
+          <AccountChart transactions={transactions}/>
+      </Suspense>
       <Suspense fallback={<BarLoader className='mt-4 width={"100%}'/>}>
           <TransactionsTable transactions={transactions}/>
       </Suspense>

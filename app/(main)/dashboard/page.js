@@ -5,18 +5,31 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Plus } from 'lucide-react'
 import React from 'react'
 import Accounts from './_components/Accounts'
+import { getBudget } from '@/actions/budget'
+import BudgetProgress from './_components/BudgetProgress'
 
 
 
 
 const DashboardPage = async() => {
   const accounts=await getUserAccounts()
-  // console.log("Accounts:", accounts)
+  
+  const defaultAccount= accounts?.find((account)=>account.isDefault);
+
+  let budgetData=null
+  if (defaultAccount){
+    budgetData=await getBudget(defaultAccount.id)
+  }
   return (
     <div>
       Dashboard
       
       {/* Monthly Budget display */}
+      {defaultAccount && (
+        <BudgetProgress initialBudget={budgetData.budget}
+           currentExpenses={budgetData?.currentExpenses || 0}
+        />
+      )}
 
       {/* Recent transaction-according to account selected */}
 
