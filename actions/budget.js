@@ -75,18 +75,31 @@ export async function updateBudget(amount){
         })
         if(!user) throw new Error("User not Authorised")
 
-        const budget=await prisma.budget.upsert({
-            where:{
+        let budget =await prisma.budget.findFirst({
+            where :{
                 userId:user.id
-            },
-            update:{
-                amount
-            },
-            create:{
-                userId:user.id,
-                amount
             }
         })
+
+        if(budget){
+            budget=await prisma.budget.update({
+                where:{
+                    userId:user.id
+                },
+                data:{
+                    amount:amount
+                }
+            })
+        }
+        else{
+            budget=await prisma.budget.create({
+                data:{
+                    userId:user.id,
+                    amount:amount,
+                    
+                }
+            })
+        }
         revalidatePath("/dashboard")
         return{
             success:true,

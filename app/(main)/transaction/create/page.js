@@ -1,11 +1,15 @@
+import { getUserAccounts } from '@/actions/dashboard'
 import React from 'react'
 
-function page() {
+const addTransactionPage=async()=> {
+  const accounts=await getUserAccounts()
   return (
     <div>
-      Transactions
+      <h1>Add Transaction</h1>
+      
     </div>
   )
 }
 
-export default page
+export default addTransactionPage
+
