@@ -22,7 +22,9 @@ const DashboardPage = async() => {
   }
   return (
     <div>
-      Dashboard
+      <div className="text-2xl font-bold text-gray-800 p-4 text-center">
+        Dashboard
+      </div>
       
       {/* Monthly Budget display */}
       {defaultAccount && (
@@ -34,7 +36,7 @@ const DashboardPage = async() => {
       {/* Recent transaction-according to account selected */}
 
       {/* Display accounts and section for add new account */}
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-3'>
         <CreateDrawer>
           <Card>
             <CardContent>

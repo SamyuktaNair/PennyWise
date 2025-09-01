@@ -19,6 +19,7 @@ const CreateDrawer = ({children}) => {
         onValueChange,
         defaultValue,
         setValue,
+        control,
         formState:{errors}
     }=useForm({
       defaultValues:{
@@ -73,18 +74,24 @@ const CreateDrawer = ({children}) => {
 
                 <div className='flex flex-col gap-1'>
                   <label htmlFor="type" className='text-lg'>Account Type</label>
-                  {/* <input type='select' placeholder='Eg: Leisure' {...register("name",{required:{value:true,message:"This field cannot be empty"}})} className='border-2 rounded-l h-10 p-2'/> */}
+                 
+                  <Controller
+                  name="type"
+                  control={control}   
+                  rules={{ required: "This field cannot be empty" }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full" id="type">
+                        <SelectValue placeholder="Select account type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Current">Current</SelectItem>
+                        <SelectItem value="Savings">Savings</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                   
-                  <Select onValueChange={(value)=>setValue("type",value)} defaultValue={watch("type")}>
-                    <SelectTrigger  className=" w-full" id='type'>
-                      <SelectValue placeholder="Select account type" className=''/>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Current">Current</SelectItem>
-                      <SelectItem value="Savings">Savings</SelectItem>
-                      
-                    </SelectContent>
-                  </Select>
                   
                   {errors.type && <div className='text-red-600'>{errors.type.message}</div>}
                 </div>

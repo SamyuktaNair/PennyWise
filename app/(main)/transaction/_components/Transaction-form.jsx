@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { createTransaction } from "@/actions/transaction";
+import { createTransaction, updateTransaction } from "@/actions/transaction";
 import usefetch from "@/hooks/usefetch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
@@ -13,14 +13,20 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import {ReceiptScanner} from "./ReceiptScanner"
+import ReceiptScanner from "./ReceiptScanner"
 
-const Transactionform = ({ accounts, editMode = false }) => {
+const Transactionform = ({ accounts, editMode = false , initialData=null}) => {
   const router = useRouter();
+  const searchParams=useSearchParams();
+  const editId=searchParams.get("edit")
 
-  const { data, loading: transactionLoading, error, func } = usefetch(createTransaction);
+  const { 
+    data, 
+    loading: transactionLoading,
+     error, 
+     func } = usefetch(editMode? updateTransaction:createTransaction);
 
   const {
     register,
@@ -31,7 +37,20 @@ const Transactionform = ({ accounts, editMode = false }) => {
     getValues,
     reset,
   } = useForm({
-    defaultValues: {
+    defaultValues: 
+    editMode && initialData? {
+      type: initialData.type,
+      amount: initialData.amount.toString(),
+      accountId:initialData.accountId,
+      category: initialData.category,
+      date: new Date(initialData.date),
+      description: initialData.description,
+      isRecurring: initialData.isRecurring,
+            ...(initialData.recurringInterval && {
+              recurringInterval: initialData.recurringInterval,
+      }),
+    } :
+    {
       type: "",
       amount: "",
       accountId: "",
@@ -39,7 +58,7 @@ const Transactionform = ({ accounts, editMode = false }) => {
       date: null,
       description: "",
       isRecurring: false,
-      recurringInterval: "",
+      //recurringInterval: "",
     },
   });
 
@@ -52,26 +71,47 @@ const Transactionform = ({ accounts, editMode = false }) => {
       ...data,
       amount:parseFloat(data.amount)
     }
+    if (editMode){
+      func(editId,formData)
+    }
+    else{
+      func(formData)
+    }
 
-    func(formData)
+    
   };
   useEffect(()=>{
     if(data?.success && !transactionLoading){
-      toast.success("Transaction created successfully")
+      toast.success(
+        editMode
+        ? "Transaction updated successfully"
+        : "Transaction created successfully"
+        
+      )
       reset()
       router.push(`/account/${data.data.accountId}`)
     }
-  },[transactionLoading,data])
+  },[transactionLoading,data,editMode])
 
   const handleScan=(scannedData)=>{
-    console.log(scannedData)
+    if (scannedData){
+      setValue("amount", scannedData.amount.toString());
+      setValue("date",new Date(scannedData.date));
+      if(scannedData.description){
+        setValue("description",scannedData.description)
+      }
+      if(scannedData.category){
+        setValue("category",scannedData.category)
+      }
+    }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} 
     className="m-2 p-3">
+      {!editMode && <ReceiptScanner onScanComplete={handleScan}/> }
       
-      <ReceiptScanner onScanComplete={handleScan}/>
+      
       
 
       {/* Type */}
@@ -209,7 +249,16 @@ const Transactionform = ({ accounts, editMode = false }) => {
           Cancel
         </Button>
         <Button type="submit" className="w-1/2" disabled={transactionLoading} >
-          Create 
+            {transactionLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {editMode ? "Updating..." : "Creating..."}
+                </>
+              ) : editMode ? (
+                "Update"
+              ) : (
+                "Create"
+              )}
         </Button>
       </div>
     </form>

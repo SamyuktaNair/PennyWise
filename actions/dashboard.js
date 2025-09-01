@@ -17,18 +17,15 @@ const number=(obj)=>{
 const dashboard=async (data)=>{
     try {
         const {userId}=await auth()
-        if(!userId) return <div>Looks Like you forgot to sign in</div>
+        if(!userId) throw new Error("Looks like u forgot to sign in");
 
         const user=await prisma.user.findUnique({
             where:{clerkUserId:userId}
         })
-        if(!user) return <div>User not authorised </div>
+        if(!user) throw new Error("User not authorised");
 
-    //     const budget =await prisma.budget.findFirst({
-    //     where:{userId}
-
-    // })
-    console.log("Received isDefault:", data.isDefault);
+    
+    //console.log("Received isDefault:", data.isDefault);
 
 
     const balance=parseFloat(data.balance)
