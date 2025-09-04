@@ -101,17 +101,17 @@ const AccountChart = ({transactions}) => {
             <div className='flex justify-around '>
                 <div className='text-center'>
                     <p className='text-muted-foreground'>Total Income</p>
-                    <p className='text-lg font-bold text-green-500'>${totals.income}</p>
+                    <p className='text-lg font-bold text-green-500'>RS.{totals.income}</p>
                 </div>
                 <div className='text-center'>
                     <p className='text-muted-foreground'>Total Expense</p>
-                    <p className='text-lg font-bold text-red-500'>${totals.expense}</p>
+                    <p className='text-lg font-bold text-red-500'>RS.{totals.expense}</p>
                 </div>
                 <div className='text-center'>
                     <p className='text-muted-foreground'>Overall</p>
                     <p className={`text-lg font-bold ${
                         totals.income-totals.expense>=0 ? "text-green-500" : "text-red-500"
-                    }`}>${totals.income-totals.expense}</p>
+                    }`}>RS.{totals.income-totals.expense}</p>
                 </div>
             </div>
             <div className='h-[400px]'>

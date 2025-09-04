@@ -2,7 +2,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache";
-import { success } from "zod";
+
 
 const number=(obj)=>{
     const serialised={...obj}
@@ -18,12 +18,12 @@ const number=(obj)=>{
 export async function updateDefaultAccount(accountId){
     try {
         const{userId}=await auth()
-        if(!userId) return <div>Looks Like you forgot to sign in</div>
+        if(!userId) throw new Error("User not Signed in")
 
         const user=await prisma.user.findUnique({
             where:{clerkUserId:userId}
         })
-        if(!user) return <div>User not authorised </div>
+        if(!user) throw new Error("User not authorised")
 
         await prisma.account.updateMany({
             where:{userId:user.id,
@@ -57,12 +57,12 @@ export async function updateDefaultAccount(accountId){
 export async function getAccountDetails(accountId) {
     try {
         const{userId}=await auth()
-        if(!userId) return <div>Looks Like you forgot to sign in</div>
+        if(!userId) throw new Error("User not Signed in")
 
         const user=await prisma.user.findUnique({
             where:{clerkUserId:userId}
         })
-        if(!user) return <div>User not authorised </div>
+        if(!user) throw new Error("User not authorised")
 
         const account =await prisma.account.findUnique({
             where:{

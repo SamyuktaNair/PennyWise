@@ -41,8 +41,45 @@ const Accounts = ({account}) => {
         }
       },[error])
   return (
+    
     <div>
-        <Card>
+        <div>
+  <Card className="rounded-xl border shadow-sm">
+    <Link href={`/accounts/${id}`} className="block">
+      {/* Header */}
+      <CardHeader className="flex items-center justify-between pb-2">
+        <CardTitle className="text-lg font-semibold text-gray-800">
+          {name}
+        </CardTitle>
+        <Switch
+          checked={isDefault}
+          disabled={loading}
+          onClick={handleChange}
+        />
+      </CardHeader>
+
+      {/* Content */}
+      <CardContent className="space-y-1">
+        <div className="text-xl font-bold text-gray-900">RS. {balance}</div>
+        <p className="text-sm text-gray-500">{type}</p>
+      </CardContent>
+
+      {/* Footer */}
+      <CardFooter className="flex justify-between items-center pt-2 text-sm font-medium">
+        <div className="flex items-center gap-1 text-green-600">
+          <ArrowUpRight className="h-4 w-4" />
+          <span>Income</span>
+        </div>
+        <div className="flex items-center gap-1 text-red-600">
+          <ArrowDownRight className="h-4 w-4" />
+          <span>Expense</span>
+        </div>
+      </CardFooter>
+    </Link>
+  </Card>
+</div>
+
+        {/* <Card>
             <Link href={`/accounts/${id}`}>
             <CardHeader checked={isDefault}>
                 <CardTitle>{name}</CardTitle>
@@ -63,7 +100,7 @@ const Accounts = ({account}) => {
             </CardFooter>
             </Link>
             
-        </Card>
+        </Card> */}
     </div>
   )
 }
